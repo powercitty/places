@@ -28,3 +28,18 @@ test("o que falta é dito, não inventado", () => {
   assert.equal(process.env.AI_GATEWAY_API_KEY, undefined);
   delete process.env.PF_PLACES_JWT_SECRET;
 });
+
+test("arquivo de segredos só vale se for fechado para os outros (600)", async () => {
+  const { chmodSync, mkdtempSync, writeFileSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { lerDoArquivo } = await import("../agent/lib/segredos.ts");
+  const arq = join(mkdtempSync(join(tmpdir(), "pf-seg-")), "segredos.json");
+  writeFileSync(arq, JSON.stringify({ PF_AGENTE_SEGREDO: "abc" }));
+  chmodSync(arq, 0o644);
+  assert.equal(lerDoArquivo(arq)("PF_AGENTE_SEGREDO"), undefined);
+  chmodSync(arq, 0o600);
+  assert.equal(lerDoArquivo(arq)("PF_AGENTE_SEGREDO"), "abc");
+  assert.equal(lerDoArquivo(arq)("AI_GATEWAY_API_KEY"), undefined);
+  assert.equal(lerDoArquivo(arq + ".nao-existe")("PF_AGENTE_SEGREDO"), undefined);
+});

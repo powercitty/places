@@ -5,8 +5,7 @@
 import { appendFileSync, mkdirSync, readdirSync, readFileSync, renameSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import type { EventoGuardado } from "#lib/supabase.ts";
-
-export const pastaDeDados = () => process.env.PF_AGENTE_DADOS ?? join(process.cwd(), ".eve", "powerfarm");
+import { pastaDeDados } from "#lib/dados.ts";
 
 const LOTE = 500;
 const MAX_BYTES_POR_EVENTO = 64 * 1024;

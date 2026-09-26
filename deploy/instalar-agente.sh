@@ -52,24 +52,44 @@ construir() {
 }
 construir
 
-diz "3/6 segredos no Keychain"
-tem() { security find-generic-password -s powerfarm -a "$1" >/dev/null 2>&1; }
-for nome in PF_AGENTE_SEGREDO PF_PLACES_JWT_SECRET; do
-  if tem "$nome"; then
-    echo "$nome: ok"
+diz "3/6 segredos (Keychain; se estiver trancado, arquivo só do dono)"
+DADOS=$DESTINO/apps/agent/.eve/powerfarm
+ARQ_SEGREDOS=$DADOS/segredos.json
+mkdir -p "$DADOS"
+no_arquivo() { # lê um segredo do arquivo 600
+  (cd "$DESTINO" && mise exec -- node -e 'try{const v=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"))[process.argv[2]];if(v)process.stdout.write(v)}catch{}' "$ARQ_SEGREDOS" "$1")
+}
+ler_segredo() { # Keychain primeiro, depois o arquivo
+  local v
+  v=$(security find-generic-password -s powerfarm -a "$1" -w 2>/dev/null || true)
+  if [ -n "$v" ]; then printf '%s' "$v"; else no_arquivo "$1"; fi
+}
+guardar_segredo() { # o valor chega pela entrada padrão, nunca na linha de comando do node
+  local nome=$1 valor
+  valor=$(cat)
+  if security add-generic-password -s powerfarm -a "$nome" -l "Powerfarm · $nome" -w "$valor" 2>/dev/null; then
+    echo "$nome: criado agora (Keychain)"
   else
-    security add-generic-password -s powerfarm -a "$nome" -l "Powerfarm · $nome" -w "$(openssl rand -hex 32)"
-    echo "$nome: criado agora"
+    printf '%s' "$valor" | (umask 077; cd "$DESTINO" && mise exec -- node -e '
+      const fs = require("fs"); const [arq, nome] = process.argv.slice(1);
+      let o = {}; try { o = JSON.parse(fs.readFileSync(arq, "utf8")); } catch {}
+      o[nome] = fs.readFileSync(0, "utf8");
+      fs.writeFileSync(arq, JSON.stringify(o, null, 2) + "\n", { mode: 0o600 }); fs.chmodSync(arq, 0o600);' "$ARQ_SEGREDOS" "$nome")
+    echo "$nome: criado agora (arquivo 600 — o Keychain deste LAB fica trancado para serviços)"
   fi
+}
+for nome in PF_AGENTE_SEGREDO PF_PLACES_JWT_SECRET; do
+  if [ -n "$(ler_segredo "$nome")" ]; then echo "$nome: ok"; else openssl rand -hex 32 | tr -d '\n' | guardar_segredo "$nome"; fi
 done
-echo "sha256 da senha do agente (é o que vai para o Supabase): $(security find-generic-password -s powerfarm -a PF_AGENTE_SEGREDO -w | tr -d '\n' | shasum -a 256 | cut -d' ' -f1)"
-tem AI_GATEWAY_API_KEY && echo "AI_GATEWAY_API_KEY: ok" || echo "AI_GATEWAY_API_KEY: FALTA — o chat não pensa sem ela (o observador funciona)"
+[ -f "$ARQ_SEGREDOS" ] && chmod 600 "$ARQ_SEGREDOS"
+echo "sha256 da senha do agente (é o que vai para o Supabase): $(ler_segredo PF_AGENTE_SEGREDO | shasum -a 256 | cut -d' ' -f1)"
+[ -n "$(ler_segredo AI_GATEWAY_API_KEY)" ] && echo "AI_GATEWAY_API_KEY: ok" || echo "AI_GATEWAY_API_KEY: FALTA — o chat não pensa sem ela (o observador funciona)"
 
 diz "4/6 serviço $ROTULO"
 NODE=$(cd "$DESTINO" && mise which node)
 NODE=${NODE/\/node\/24.*\/bin\/node//node/24/bin/node}
-LOGS=$DESTINO/apps/agent/.eve/powerfarm
-mkdir -p "$LOGS" "$(dirname "$PLIST")"
+LOGS=$DADOS
+mkdir -p "$(dirname "$PLIST")"
 cat > "$PLIST.novo" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
