@@ -9,7 +9,25 @@ export async function proxy(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const owner = process.env.POWERFARM_OWNER_ID;
-  if (!url || !key || !owner) return NextResponse.json({ error: 'Powerfarm admission is not configured' }, { status: 503 });
+  const missing = [
+    !url && 'NEXT_PUBLIC_SUPABASE_URL',
+    !key && 'NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
+    !owner && 'POWERFARM_OWNER_ID',
+    !process.env.NEXT_PUBLIC_BASE_URL && 'NEXT_PUBLIC_BASE_URL',
+    !process.env.POWERFARM_OAUTH_CLIENT_ID && 'POWERFARM_OAUTH_CLIENT_ID',
+    !process.env.POWERFARM_OAUTH_CLIENT_SECRET && 'POWERFARM_OAUTH_CLIENT_SECRET',
+  ].filter(Boolean);
+  // Local development runs without Powerfarm admission. Production never does:
+  // an unconfigured production deployment still refuses every request below.
+  if (missing.length && process.env.NODE_ENV !== 'production') return NextResponse.next();
+  if (!url || !key || !owner || missing.length) {
+    // Name the gap. A blank 503 makes an unconfigured deployment look identical
+    // to a broken one, and the operator cannot tell which deployment they are on.
+    return NextResponse.json(
+      { error: 'Powerfarm admission is not configured', missing, deployment: process.env.VERCEL_URL ?? 'local' },
+      { status: 503 },
+    );
+  }
   let response = NextResponse.next({ request });
   const supabase = createServerClient(url, key, {
     cookies: {
