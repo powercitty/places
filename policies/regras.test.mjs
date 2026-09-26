@@ -29,6 +29,15 @@ test("código criando serviço fora do agente é barrado; no porteiro é permiti
   assert.deepEqual(violacoesDeConteudo("apps/agent/agent/lib/porteiro/fichas.ts", cod), []);
 });
 
+test("o observador pode LER as pastas do launchd, mas não ligar serviço", () => {
+  const ler = 'readdirSync(join(home, "Library/LaunchAgents"))';
+  assert.deepEqual(violacoesDeConteudo("apps/agent/agent/lib/coleta/inventario.ts", ler), []);
+  assert.match(violacoesDeConteudo("apps/agent/agent/tools/x.ts", ler)[0], /pastas de serviços/);
+  assert.match(violacoesDeConteudo("apps/agent/agent/lib/coleta/inventario.ts", "launchctl bootstrap gui/501 x.plist")[0], /ligando serviço/);
+  assert.match(violacoesDeConteudo("apps/coloured-places/lib/x.ts", "brew services start postgresql")[0], /ligando serviço/);
+  assert.deepEqual(violacoesDeConteudo("deploy/instalar-agente.sh", "launchctl bootstrap gui/501 x.plist"), []);
+});
+
 test("versões têm que bater com a política", () => {
   const politica = { node: "24", pnpm: "12.6.0" };
   const certo = { packageManager: "pnpm@12.6.0", engines: { node: ">=24 <25" } };

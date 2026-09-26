@@ -8,26 +8,41 @@ export type Maquina = "lab-256" | "lab-512" | "lab-8gb";
 export type Papel = "principal" | "reserva" | "bancada";
 export type Lugar = "supabase" | "labs" | "apps" | "engines" | "drive";
 
-// ─── Conversa tela → agente (o que coloured-places já envia e espera) ─────────
+// ─── Conversa tela → agente (canal Eve) ─────────────────────────────────────
+// O chat NÃO é MCP. A tela fala com o canal Eve do agente (/eve/v1/...) passando por um
+// proxy no servidor da tela. O proxy assina um token curto (HS256) com a identidade do
+// operador; o agente confere emissor, audiência e prazo antes de aceitar.
 
-/** Corpo do POST /api/agent-runtime/places/{placeId}/messages */
-export interface MensagemParaAgente {
-  session_id: string | null;
-  text: string;
-  app_id?: string | null;
-  policy_overrides?: Record<string, unknown> | null;
-  files?: unknown[];
+/** Quem assina o token do chat. */
+export const EMISSOR_DO_CHAT = "places.minilab.work";
+/** Validade do token do chat, em segundos. */
+export const VALIDADE_DO_TOKEN_S = 300;
+/** Audiência do token: cada agente só aceita token feito para ele. */
+export function audienciaDoAgente(maquina: Maquina): string {
+  return `pf-agente-${maquina}`;
+}
+/** Caminho do proxy na tela: /eve/<maquina>/v1/** → agente /eve/v1/** */
+export function caminhoNoProxy(maquina: Maquina, resto: string): string {
+  return `/eve/${maquina}/v1/${resto.replace(/^\/+/, "")}`;
 }
 
-/** Resposta do agente (ControlPlaneSendOutcome na tela). */
-export interface RespostaDoAgente {
-  session_id: string;
-  app_id?: string | null;
-  run_id: string;
-  output_kind: string;
-  status: string;
-  text: string;
-  effective_policy?: Record<string, unknown> | null;
+// ─── O que o agente manda para o Supabase ────────────────────────────────────
+
+/** Onde um sinal vital foi medido. "agentes" = o próprio agente. */
+export type LugarDoSinal = Lugar | "agentes";
+export type EstadoDoSinal = "ok" | "olhar" | "desconhecido";
+
+/** Um sinal vital: pequeno, frequente (a cada minuto). */
+export interface Sinal {
+  lugar: LugarDoSinal;
+  /** O que foi medido (ex.: "lab-256", "manhattan", "kernal"). */
+  alvo: string;
+  /** Qual aspecto (ex.: "disco", "memoria", "internet", "tunel"). */
+  aspecto: string;
+  estado: EstadoDoSinal;
+  valor: Record<string, unknown>;
+  /** ISO 8601 */
+  observado_em: string;
 }
 
 // ─── O que existe × o que está registrado ────────────────────────────────────
@@ -44,6 +59,8 @@ export interface Observado {
   vistoEm: string;
   /** Pela política da casa, isto não deveria existir (ex.: serviço criado fora do agente). */
   proibido?: boolean;
+  /** Por que é proibido, em português simples. */
+  motivo?: string;
 }
 
 /** Linha de powerfarm_registry.entities (só o que a tela precisa). */

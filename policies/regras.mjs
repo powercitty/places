@@ -32,10 +32,15 @@ const SEGREDOS = [
   [/\bvck_[A-Za-z0-9]{20,}/, "chave do Vercel AI Gateway"],
   [/SERVICE_ROLE[A-Z_]*\s*[:=]\s*["']?eyJ[A-Za-z0-9_-]{20,}/, "chave de serviço do Supabase"],
 ];
-const SERVICO_NO_CODIGO = /\b(launchctl\s+(load|bootstrap|submit)|Library\/LaunchAgents|Library\/LaunchDaemons|crontab\s+-|pm2\s+(start|save|startup))\b/;
+// Regra 7 em duas partes:
+//  - LIGAR serviço (launchctl load/bootstrap/submit/enable/kickstart, crontab, pm2, brew services): só nas
+//    regras e no porteiro/instalador do agente.
+//  - MENCIONAR as pastas de serviços do launchd: também no observador, que só LÊ o que existe.
+const LIGA_SERVICO = /\b(launchctl\s+(load|bootstrap|submit|enable|kickstart)|crontab\s+-|pm2\s+(start|save|startup)|brew\s+services\s+(start|restart|run))\b/;
+const PASTA_DE_SERVICO = /\bLibrary\/Launch(Agents|Daemons)\b/;
 const CODIGO = /\.(m?[jt]sx?|cjs|sh|py|rs|go|swift)$/;
-// Onde a regra 7 permite falar de launchd: nas próprias regras e no porteiro do agente (fase 3).
-const PODE_FALAR_DE_SERVICO = [/^policies\//, /^apps\/agent\/agent\/lib\/porteiro\//];
+const PODE_LIGAR_SERVICO = [/^policies\//, /^apps\/agent\/agent\/lib\/porteiro\//, /^deploy\//];
+const PODE_LER_SERVICOS = [...PODE_LIGAR_SERVICO, /^apps\/agent\/agent\/lib\/coleta\//];
 const MAGICOS_BINARIO = ["cffaedfe", "cefaedfe", "feedfacf", "feedface", "cafebabe", "7f454c46"];
 
 export function violacoesDeNome(caminho) {
@@ -45,8 +50,12 @@ export function violacoesDeNome(caminho) {
 
 export function violacoesDeConteudo(caminho, texto) {
   const v = SEGREDOS.filter(([re]) => re.test(texto)).map(([, o]) => `parece ${o} (regra 6)`);
-  if (CODIGO.test(caminho) && !PODE_FALAR_DE_SERVICO.some((re) => re.test(caminho)) && SERVICO_NO_CODIGO.test(texto)) {
-    v.push("código criando serviço fora do agente (regra 7)");
+  if (CODIGO.test(caminho)) {
+    if (LIGA_SERVICO.test(texto) && !PODE_LIGAR_SERVICO.some((re) => re.test(caminho))) {
+      v.push("código ligando serviço fora do agente (regra 7)");
+    } else if (PASTA_DE_SERVICO.test(texto) && !PODE_LER_SERVICOS.some((re) => re.test(caminho))) {
+      v.push("código mexendo nas pastas de serviços do launchd fora do agente (regra 7)");
+    }
   }
   return v;
 }

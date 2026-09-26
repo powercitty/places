@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { lerPerfil, validar } from "../scripts/maquina.mjs";
+import { lerPerfil, validar, validarComum } from "../scripts/maquina.mjs";
 
 const perfis = ["lab-256", "lab-512", "lab-8gb"].map(lerPerfil);
 
@@ -21,4 +21,10 @@ test("exatamente um principal, e principal e reserva apontam um para o outro", (
 test("a bancada não cuida de lugares da nuvem", () => {
   const bancada = perfis.find((p) => p.papel === "bancada");
   assert.deepEqual(bancada.lugares, ["labs"]);
+});
+
+test("a configuração comum é válida e só tem a chave pública do Supabase", () => {
+  const comum = lerPerfil("comum");
+  assert.deepEqual(validarComum(comum), []);
+  assert.deepEqual(validarComum({ ...comum, supabase_chave_publica: "sb_secret_xxx" }).length, 1);
 });
