@@ -33,6 +33,16 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
+  banco:
+    name: migrações do Supabase
+    needs: regras
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: bash scripts/testar-banco.sh
+        env:
+          PGBIN: /usr/lib/postgresql/16/bin
+
   agente:
     name: build do agente (${{ matrix.maquina }})
     needs: testes

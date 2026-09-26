@@ -7,6 +7,7 @@ echo "== 2/6 segredos (gitleaks)";      if command -v gitleaks >/dev/null; then 
 echo "== 3/6 instalar (trava exata)";   pnpm install --frozen-lockfile
 echo "== 4/6 tipos";                    pnpm typecheck
 echo "== 5/6 testes";                   pnpm test
+echo "   banco (migrações do Supabase)"; bash scripts/testar-banco.sh
 echo "== 6/6 build dos 3 perfis + tela"
 for m in lab-256 lab-512 lab-8gb; do (cd apps/agent && MAQUINA=$m pnpm build >/dev/null && echo "   agente $m: ok"); done
 (cd apps/coloured-places && NEXT_TELEMETRY_DISABLED=1 pnpm build >/dev/null && echo "   coloured-places: ok")
