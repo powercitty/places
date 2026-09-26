@@ -1,0 +1,8 @@
+{
+  "maquina": "lab-512",
+  "registry": "pf.host-runner.lab-512",
+  "papel": "reserva",
+  "lugares": ["supabase", "labs", "apps", "engines", "drive"],
+  "modelo": "anthropic/claude-sonnet-5",
+  "reserva": "lab-8gb"
+}

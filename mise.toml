@@ -1,0 +1,5 @@
+# Política de versões da Powerfarm (constituição): Node = LTS mais nova; o resto = estável mais nova.
+# Mudar aqui exige aprovação do dono (ver .github/CODEOWNERS). O CI confere que isto bate com policies/versoes.json.
+[tools]
+node = "24"
+pnpm = "12.6.0"

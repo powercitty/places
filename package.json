@@ -1,0 +1,16 @@
+{
+  "name": "powerfarm-places",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "verificar": "bash scripts/ci.sh",
+    "regras": "node policies/regras.mjs",
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "test": "node --test \"policies/*.test.mjs\" && pnpm -r --if-present run test",
+    "build": "pnpm -r --if-present run build"
+  }
+}

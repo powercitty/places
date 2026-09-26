@@ -1,0 +1,15 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Scripts de instalação de pacotes: negados por padrão. Liberar exige PR na constituição.
+allowBuilds:
+  '@mongodb-js/zstd': false
+  node-liblzma: false
+  sharp: false
+
+# O pnpm segura versões recém-publicadas (proteção contra pacote malicioso).
+# Exceções só com versão exata, e saem assim que a versão passar do período de espera.
+minimumReleaseAgeExclude:
+  - '@types/node@24.19.0'
+  - eve@0.67.0

@@ -1,0 +1,7 @@
+{
+  "_regra": "Node = LTS mais nova; o resto = estável mais nova. Um robô (Renovate) abre PR para subir; entra se os testes passarem.",
+  "node": "24",
+  "pnpm": "12.6.0",
+  "eve": "0.67.0",
+  "mcp_protocol": "2026-07-28"
+}

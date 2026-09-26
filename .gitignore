@@ -1,0 +1,16 @@
+node_modules/
+.next/
+.output/
+.eve/
+.nitro/
+.turbo/
+dist/
+coverage/
+target/
+.venv/
+*.log
+.DS_Store
+.env
+.env.*
+!.env.example
+apps/agent/agent/lib/maquina.gerada.ts

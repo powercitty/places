@@ -1,0 +1,27 @@
+{
+  "name": "@powerfarm/agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#*": "./agent/*"
+  },
+  "scripts": {
+    "maquina": "node scripts/maquina.mjs",
+    "dev": "node scripts/maquina.mjs lab-256 && eve dev",
+    "build": "node scripts/maquina.mjs ${MAQUINA:-lab-256} && eve build",
+    "start": "eve start",
+    "typecheck": "node scripts/maquina.mjs lab-256 && tsc --noEmit -p tsconfig.json",
+    "test": "node scripts/maquina.mjs lab-256 && node --test \"test/*.test.*\""
+  },
+  "dependencies": {
+    "@powerfarm/contract": "workspace:*",
+    "eve": "0.67.0",
+    "just-bash": "3.4.2",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.0",
+    "typescript": "7.0.2"
+  }
+}
