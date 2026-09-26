@@ -35,7 +35,7 @@ if [ ! -d "$DESTINO/.git" ]; then
 else
   git -C "$DESTINO" remote set-url origin "$ORIGEM"
 fi
-git -C "$DESTINO" fetch --quiet origin
+git -C "$DESTINO" fetch --quiet --prune origin
 ANTERIOR=$(git -C "$DESTINO" rev-parse --verify --quiet HEAD || true)
 git -C "$DESTINO" checkout --quiet --detach "${ALVO:-origin/main}"
 COMMIT=$(git -C "$DESTINO" rev-parse --short=12 HEAD)
