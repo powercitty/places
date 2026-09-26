@@ -99,6 +99,7 @@ cat > "$PLIST.novo" <<PLIST
   <key>ProgramArguments</key>
   <array>
     <string>$NODE</string>
+    <string>--import</string><string>$DESTINO/apps/agent/scripts/carregar-segredos.mjs</string>
     <string>$DESTINO/apps/agent/node_modules/eve/bin/eve.js</string>
     <string>start</string>
     <string>--host</string><string>127.0.0.1</string>

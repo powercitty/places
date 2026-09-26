@@ -11,7 +11,7 @@ import { pastaDeDados } from "#lib/dados.ts";
 export type NomeDoSegredo =
   | "PF_AGENTE_SEGREDO" //    o agente se identifica no Supabase (só o sha256 fica lá)
   | "PF_PLACES_JWT_SECRET" // a tela assina o token do chat com isto
-  | "AI_GATEWAY_API_KEY"; //  inteligência pelo Vercel AI Gateway
+  | "AI_GATEWAY_API_KEY"; //  inteligência pelo Vercel AI Gateway (carregada antes do Eve: scripts/carregar-segredos.mjs)
 
 export const SERVICO_NO_KEYCHAIN = "powerfarm";
 
@@ -62,17 +62,6 @@ export function segredo(nome: NomeDoSegredo, ler: LeitorDeKeychain = lerDoKeycha
   const v = ler(nome);
   if (v) lidos.set(nome, v);
   return v;
-}
-
-/** Para bibliotecas que só leem process.env (o AI Gateway): copia do Keychain para o ambiente do processo. */
-export function carregarNoAmbiente(nomes: NomeDoSegredo[], ler: LeitorDeKeychain = lerDoKeychainOuArquivo): NomeDoSegredo[] {
-  const faltando: NomeDoSegredo[] = [];
-  for (const nome of nomes) {
-    const v = segredo(nome, ler);
-    if (v) process.env[nome] = v;
-    else faltando.push(nome);
-  }
-  return faltando;
 }
 
 /** Só para testes. */
