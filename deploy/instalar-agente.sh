@@ -124,10 +124,18 @@ mv "$PLIST.novo" "$PLIST"
 # log não cresce sem fim: guarda só o último pedaço
 [ -f "$LOGS/agente.log" ] && [ "$(stat -f%z "$LOGS/agente.log")" -gt 5000000 ] && tail -c 1000000 "$LOGS/agente.log" > "$LOGS/agente.log.1" && mv "$LOGS/agente.log.1" "$LOGS/agente.log"
 
-ligar() {
-  launchctl bootout "$DOMINIO/$ROTULO" 2>/dev/null || true
-  launchctl bootstrap "$DOMINIO" "$PLIST"
-  launchctl kickstart -k "$DOMINIO/$ROTULO"
+ligar() { # desliga a versão antiga, espera ela sair de verdade, liga a nova
+  if launchctl print "$DOMINIO/$ROTULO" >/dev/null 2>&1; then
+    launchctl bootout "$DOMINIO/$ROTULO" 2>/dev/null || true
+    for _ in $(seq 1 30); do launchctl print "$DOMINIO/$ROTULO" >/dev/null 2>&1 || break; sleep 1; done
+  fi
+  local t
+  for t in 1 2 3 4 5; do
+    launchctl bootstrap "$DOMINIO" "$PLIST" 2>/dev/null && { launchctl kickstart "$DOMINIO/$ROTULO" 2>/dev/null || true; return 0; }
+    sleep 3
+  done
+  echo "✗ o launchd não aceitou o serviço" >&2
+  return 1
 }
 respondeu() {
   for _ in $(seq 1 45); do
@@ -138,7 +146,7 @@ respondeu() {
 }
 
 diz "5/6 ligando"
-ligar
+ligar || true
 
 diz "6/6 conferindo"
 if respondeu; then
@@ -151,7 +159,7 @@ if [ -n "$ANTERIOR" ] && [ "$ANTERIOR" != "$(git -C "$DESTINO" rev-parse HEAD)" 
   echo "voltando para ${ANTERIOR:0:12}…" >&2
   git -C "$DESTINO" checkout --quiet --detach "$ANTERIOR"
   construir
-  ligar
+  ligar || true
   respondeu && falha "a versão nova falhou; o agente voltou para ${ANTERIOR:0:12} e está no ar" || falha "nem a versão anterior respondeu — olhar $LOGS/agente.log"
 fi
 falha "o agente não respondeu — olhar $LOGS/agente.log"
