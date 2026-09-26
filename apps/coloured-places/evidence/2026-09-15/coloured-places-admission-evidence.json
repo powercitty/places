@@ -1,0 +1,168 @@
+{
+  "identity": {
+    "id": "cb690740-ffd8-439a-8d54-d9284e729443",
+    "kind": "app",
+    "name": "Coloured Places",
+    "mandate": null,
+    "created_at": "2026-09-15T14:40:08.255872+00:00",
+    "created_by": "d639fd1c-8021-4276-a756-aafd8ee2fdfa",
+    "slug": "pf.coloured-places",
+    "contract_version": 2,
+    "metadata": {
+      "path": "/Users/danvoulez/App Park/coloured-places",
+      "slug": "pf.coloured-places",
+      "owner": "pf.danvoulez",
+      "place": "pf.app-park.8gb",
+      "route": "https://places.minilab.work",
+      "title": "Coloured Places",
+      "health": {
+        "path": "/api/health"
+      },
+      "mandate": "Read and present observations; no scheduled execution authority.",
+      "runtime": "node",
+      "lifecycle": "production",
+      "qualifier": "app",
+      "repository": {
+        "url": "https://github.com/powerfarm/powerfarm-coloured-places"
+      },
+      "environments": [
+        "production"
+      ],
+      "brand_version": "0.5.1",
+      "login_provider": "powerfarm-identity",
+      "observability_contract": "coloured-places.observability"
+    }
+  },
+  "contract": {
+    "id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+    "name": "coloured-places.observability",
+    "kind": "client",
+    "parent_id": "12fb5468-ed13-4a02-b4c3-9f5ea9ef9d7a",
+    "provider_id": "d0adb9d6-1e4e-4bf5-b589-cf218d632eb9",
+    "client_id": "cb690740-ffd8-439a-8d54-d9284e729443",
+    "artifact_id": "pf.service.antenna.http",
+    "version": "1",
+    "terms": {
+      "max_bytes": 65536,
+      "destinations": []
+    },
+    "terms_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+    "valid_until": "2026-12-14T08:39:58.899649+00:00",
+    "revoked_at": null,
+    "created_by": "d639fd1c-8021-4276-a756-aafd8ee2fdfa",
+    "created_at": "2026-09-15T14:40:43.830177+00:00"
+  },
+  "events": [
+    {
+      "id": 25,
+      "contract_id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+      "action": "proposed",
+      "party_id": null,
+      "actor_id": "d639fd1c-8021-4276-a756-aafd8ee2fdfa",
+      "terms_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+      "created_at": "2026-09-15T14:40:43.830177+00:00"
+    },
+    {
+      "id": 26,
+      "contract_id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+      "action": "accepted",
+      "party_id": "d0adb9d6-1e4e-4bf5-b589-cf218d632eb9",
+      "actor_id": "d639fd1c-8021-4276-a756-aafd8ee2fdfa",
+      "terms_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+      "created_at": "2026-09-15T14:40:43.93574+00:00"
+    },
+    {
+      "id": 27,
+      "contract_id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+      "action": "accepted",
+      "party_id": "cb690740-ffd8-439a-8d54-d9284e729443",
+      "actor_id": "d639fd1c-8021-4276-a756-aafd8ee2fdfa",
+      "terms_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+      "created_at": "2026-09-15T14:40:44.020338+00:00"
+    }
+  ],
+  "deployment": {
+    "id": "09546246-db19-4544-8c88-d977bad6016a",
+    "entity_id": "cb690740-ffd8-439a-8d54-d9284e729443",
+    "environment": "production",
+    "status": "live",
+    "machine_id": "16f2c82b-aaed-487b-8a12-0a1f6f855ddb",
+    "revision": "8e54548ab5566075dc05349714dfd101f2995b9d",
+    "artifact_sha256": null,
+    "url": "https://places.minilab.work",
+    "health_status": "passing",
+    "health_checked_at": "2026-09-15T14:49:05.330641+00:00",
+    "deployed_by": "d639fd1c-8021-4276-a756-aafd8ee2fdfa",
+    "started_at": "2026-09-15T14:49:05.330641+00:00",
+    "finished_at": "2026-09-15T14:49:05.330641+00:00",
+    "note": "App v2 tenant admitted to App Park 8GB. Powerfarm login entry and operator authorization tested; Antenna observation received and receipted. Full interactive OAuth consent remains pending first user login."
+  },
+  "startup_observation": {
+    "event": "powerfarm.observation",
+    "source": "pf.coloured-places",
+    "observed_at": "2026-09-15T14:48:44.684Z",
+    "aspects": {
+      "antenna": {
+        "state": "healthy",
+        "http_status": 200,
+        "contract_services": {
+          "status": "current",
+          "active_client_contracts": 5,
+          "expires_at": "2026-09-15T14:49:31.465016Z"
+        }
+      }
+    },
+    "contract": "coloured-places.observability",
+    "receipt_id": "rcp_01a0a58aaf9f7010ad21166507f790f9",
+    "result": {
+      "capability": "service.invoke",
+      "contract_id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+      "contract_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+      "definition_sha256": "15b27ae3c4a42a5ef6487722e0412073e7f0303c91ecd751990fc5428513fd11",
+      "result": {
+        "capability": "document.inspect",
+        "observation": {
+          "digest": "38c6309d6b863798951fb73ee01a5c72597d45bba13eca6dc8d1e9cdfff4fbd2",
+          "size_bytes": 276,
+          "sniffed_content_type": "application/json",
+          "declared_content_type": "application/json",
+          "structure": {
+            "kind": "json",
+            "top_level": [
+              "event",
+              "source",
+              "observed_at",
+              "aspects"
+            ]
+          }
+        }
+      },
+      "outputs": {
+        "preserve": {
+          "capability": "object.store",
+          "digest": "38c6309d6b863798951fb73ee01a5c72597d45bba13eca6dc8d1e9cdfff4fbd2",
+          "size_bytes": 276,
+          "content_type": "application/json"
+        },
+        "inspect": {
+          "capability": "document.inspect",
+          "observation": {
+            "digest": "38c6309d6b863798951fb73ee01a5c72597d45bba13eca6dc8d1e9cdfff4fbd2",
+            "size_bytes": 276,
+            "sniffed_content_type": "application/json",
+            "declared_content_type": "application/json",
+            "structure": {
+              "kind": "json",
+              "top_level": [
+                "event",
+                "source",
+                "observed_at",
+                "aspects"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

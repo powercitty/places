@@ -1,0 +1,180 @@
+{
+  "url": "https://places.minilab.work",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "body": {
+        "status": "alive",
+        "identity": "pf.coloured-places"
+      }
+    },
+    {
+      "path": "/api/observability",
+      "status": 401,
+      "body": {
+        "error": "Sign in to Powerfarm"
+      }
+    },
+    {
+      "path": "/auth/callback?code=invalid&state=invalid",
+      "status": 401
+    },
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/api/observability",
+      "status": 403,
+      "body": {
+        "error": "Same-origin request required"
+      }
+    },
+    {
+      "path": "/api/observability",
+      "status": 200,
+      "body": {
+        "event": "powerfarm.observation",
+        "source": "pf.coloured-places",
+        "observed_at": "2026-09-15T14:47:14.810Z",
+        "aspects": {
+          "antenna": {
+            "state": "healthy",
+            "http_status": 200,
+            "contract_services": {
+              "status": "current",
+              "active_client_contracts": 5,
+              "expires_at": "2026-09-15T14:48:00.527015Z"
+            }
+          }
+        },
+        "contract": "coloured-places.observability",
+        "receipt_id": "rcp_01a0a589509975e2b9bb9deaf3b92c92",
+        "result": {
+          "capability": "service.invoke",
+          "contract_id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+          "contract_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+          "definition_sha256": "15b27ae3c4a42a5ef6487722e0412073e7f0303c91ecd751990fc5428513fd11",
+          "result": {
+            "capability": "document.inspect",
+            "observation": {
+              "digest": "0f0320fadc63c858f2575f539458ce54d85e7460982213feaa9f57b73493d9c9",
+              "size_bytes": 276,
+              "sniffed_content_type": "application/json",
+              "declared_content_type": "application/json",
+              "structure": {
+                "kind": "json",
+                "top_level": [
+                  "event",
+                  "source",
+                  "observed_at",
+                  "aspects"
+                ]
+              }
+            }
+          },
+          "outputs": {
+            "preserve": {
+              "capability": "object.store",
+              "digest": "0f0320fadc63c858f2575f539458ce54d85e7460982213feaa9f57b73493d9c9",
+              "size_bytes": 276,
+              "content_type": "application/json"
+            },
+            "inspect": {
+              "capability": "document.inspect",
+              "observation": {
+                "digest": "0f0320fadc63c858f2575f539458ce54d85e7460982213feaa9f57b73493d9c9",
+                "size_bytes": 276,
+                "sniffed_content_type": "application/json",
+                "declared_content_type": "application/json",
+                "structure": {
+                  "kind": "json",
+                  "top_level": [
+                    "event",
+                    "source",
+                    "observed_at",
+                    "aspects"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "path": "/api/observability",
+      "status": 200,
+      "body": {
+        "event": "powerfarm.observation",
+        "source": "pf.coloured-places",
+        "observed_at": "2026-09-15T14:47:14.810Z",
+        "aspects": {
+          "antenna": {
+            "state": "healthy",
+            "http_status": 200,
+            "contract_services": {
+              "status": "current",
+              "active_client_contracts": 5,
+              "expires_at": "2026-09-15T14:48:00.527015Z"
+            }
+          }
+        },
+        "contract": "coloured-places.observability",
+        "receipt_id": "rcp_01a0a589509975e2b9bb9deaf3b92c92",
+        "result": {
+          "capability": "service.invoke",
+          "contract_id": "f5bde058-9e7e-465d-9938-9744046cb5a1",
+          "contract_sha256": "27ae1700cb25feaa05317e56e1dd68f4ab4434ff552d5b0b3dcf3c25ea3b4147",
+          "definition_sha256": "15b27ae3c4a42a5ef6487722e0412073e7f0303c91ecd751990fc5428513fd11",
+          "result": {
+            "capability": "document.inspect",
+            "observation": {
+              "digest": "0f0320fadc63c858f2575f539458ce54d85e7460982213feaa9f57b73493d9c9",
+              "size_bytes": 276,
+              "sniffed_content_type": "application/json",
+              "declared_content_type": "application/json",
+              "structure": {
+                "kind": "json",
+                "top_level": [
+                  "event",
+                  "source",
+                  "observed_at",
+                  "aspects"
+                ]
+              }
+            }
+          },
+          "outputs": {
+            "preserve": {
+              "capability": "object.store",
+              "digest": "0f0320fadc63c858f2575f539458ce54d85e7460982213feaa9f57b73493d9c9",
+              "size_bytes": 276,
+              "content_type": "application/json"
+            },
+            "inspect": {
+              "capability": "document.inspect",
+              "observation": {
+                "digest": "0f0320fadc63c858f2575f539458ce54d85e7460982213feaa9f57b73493d9c9",
+                "size_bytes": 276,
+                "sniffed_content_type": "application/json",
+                "declared_content_type": "application/json",
+                "structure": {
+                  "kind": "json",
+                  "top_level": [
+                    "event",
+                    "source",
+                    "observed_at",
+                    "aspects"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "freshness": "fresh"
+      }
+    }
+  ]
+}

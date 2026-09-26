@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0e0e0e;
+  --foreground: #f0f0f0;
+
+  /* Safe area insets — only non-zero when viewport-fit=cover is active.
+     Use these CSS vars throughout rather than env() directly for clarity.
+     safe-area-max-inset-* are new in iOS 26 / Safari 26: static maximums
+     (constants) — useful for layout calculations that need stability.
+     The static variants don't change as the toolbar animates in/out,
+     making them ideal for fixed-height containers. */
+  --sat:     env(safe-area-inset-top,    0px);
+  --sab:     env(safe-area-inset-bottom, 0px);
+  --sal:     env(safe-area-inset-left,   0px);
+  --sar:     env(safe-area-inset-right,  0px);
+  --sat-max: env(safe-area-max-inset-top,    var(--sat));
+  --sab-max: env(safe-area-max-inset-bottom, var(--sab));
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent rubber-band overscroll revealing the dark background on macOS */
+  overscroll-behavior: none;
+  /* Optimise multi-line text rendering: prevents orphaned words on last line */
+  text-wrap: pretty;
+}
+
+/* Structural: prevent native scrollbar from ever showing on the body.
+   Each page that needs scroll manages it via its own overflow container
+   with .scrollbar-none. */
+html {
+  scrollbar-width: none;
+  /* Prevent rubber-band overscroll on iOS Safari */
+  overscroll-behavior: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area padding utilities.
+   pt-safe / pb-safe use the *maximum* inset variants from iOS 26.
+   Using max-insets for fixed layouts prevents padding from reflowing
+   as the Safari toolbar animates in/out — the value is stable. */
+.pt-safe {
+  padding-top: max(12px, var(--sat-max));
+}
+.pb-safe {
+  /* --sab-max: static maximum bottom inset (iOS 26). Falls back to --sab on older OS. */
+  padding-bottom: max(10px, var(--sab-max));
+}
+.pb-safe-input {
+  /* Input bar bottom padding. Uses dynamic --sab (not max) so when the virtual
+     keyboard is open and covering the home indicator, --sab drops to ~0 and the
+     base kicks in — avoids the phantom gap between input and keyboard edge. */
+  padding-bottom: max(6px, var(--sab));
+}
+
+/* Smooth focus ring */
+:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 3px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
