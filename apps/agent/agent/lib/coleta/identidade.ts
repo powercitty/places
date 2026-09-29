@@ -4,8 +4,8 @@ import { idPara } from "@powerfarm/contract";
 
 /** Serviços que a casa conhece pelo nome no launchd. */
 const CONHECIDOS: [RegExp, string][] = [
-  [/^com\.project-manhattan\./, "pf.process.manhattan"],
-  [/^work\.minilab\.antenna$/, "pf.antenna"],
+  [/^com\.project-manhattan\./, "powerfarm.process.manhattan"],
+  [/^work\.minilab\.antenna$/, "powerfarm.antenna"],
 ];
 
 export function idDoServico(rotulo: string, maquina: string, rotuloDoAgente: string, registryDoAgente: string): string {

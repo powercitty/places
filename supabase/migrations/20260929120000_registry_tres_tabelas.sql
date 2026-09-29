@@ -1,5 +1,6 @@
 -- Registry com três coisas e mais nada: ENTIDADES, OBJETOS e CONTRATOS (decisão do dono, 2026-09-29).
 -- Artefato, documento, arquivo, código: tudo é objeto. Relação entre coisas é contrato.
+-- Os nomes são powerfarm.<...> (a empresa é "powerfarm"). Nada se chama pf.: os nomes antigos viram powerfarm.
 --
 -- A migração inteira é uma transação: ou tudo muda, ou nada muda.
 --   1. confere que o banco está como foi visto (sem contracts nem grants; todo artifact com versão);
@@ -11,8 +12,10 @@
 --        pf_agente_registry (agentes), pf_places_estado (Coloured Places),
 --        minivault_list / minivault_get e a leitura de arquivos do Minivault no storage;
 --   5. apaga as tabelas antigas (cópia de segurança fora do banco: registry-backup-2026-09-29.json);
---   6. cria pf_agente_fundar: a única porta de escrita do Registry. Quem chama é o DMG da fundação,
---      com o "sim" do dono (o duplo clique).
+--   6. cria powerfarm_fundar: a única porta de escrita do Registry. Quem chama é o DMG da fundação,
+--      com o "sim" do dono (o duplo clique);
+--   7. a observação passa a usar os mesmos nomes: agentes e inventários com powerfarm.*; o inventário
+--      converte pf.* de agente que ainda não passou pelo DMG.
 
 -- ─── 1. o banco está como foi visto ────────────────────────────────────────────
 do $$
@@ -28,7 +31,7 @@ end $$;
 
 -- ─── 2. as três tabelas ────────────────────────────────────────────────────────
 create table powerfarm_registry.entidades (
-  id          text primary key check (id ~ '^pf(\.[a-z0-9][a-z0-9-]*)+$'),
+  id          text primary key check (id ~ '^powerfarm(\.[a-z0-9][a-z0-9-]*)*$'),   -- "powerfarm" é a empresa
   tipo        text not null check (length(btrim(tipo)) > 0),
   nome        text not null check (length(btrim(nome)) > 0),
   descricao   text,
@@ -38,7 +41,7 @@ create table powerfarm_registry.entidades (
 );
 
 create table powerfarm_registry.objetos (
-  id          text not null check (id ~ '^pf(\.[a-z0-9][a-z0-9-]*)+$'),
+  id          text not null check (id ~ '^powerfarm(\.[a-z0-9][a-z0-9-]*)+$'),
   versao      integer not null check (versao >= 1),
   tipo        text not null check (length(btrim(tipo)) > 0),
   nome        text not null check (length(btrim(nome)) > 0),
@@ -52,7 +55,7 @@ create table powerfarm_registry.objetos (
 );
 
 create table powerfarm_registry.contratos (
-  id          text not null check (id ~ '^pf\.contrato(\.[a-z0-9][a-z0-9-]*)+$'),
+  id          text not null check (id ~ '^powerfarm\.contrato(\.[a-z0-9][a-z0-9-]*)+$'),
   versao      integer not null check (versao >= 1),
   nome        text not null check (length(btrim(nome)) > 0),
   partes      text[] not null check (cardinality(partes) >= 1),   -- entidades
@@ -139,13 +142,13 @@ create trigger conferir_contrato before insert on powerfarm_registry.contratos
 
 -- ─── 3. copia o que existia ────────────────────────────────────────────────────
 insert into powerfarm_registry.entidades (id, tipo, nome, descricao, criada_em, retirada_em)
-select id, kind, title, summary, created_at, retired_at
+select regexp_replace(id, '^pf\.', 'powerfarm.'), kind, title, summary, created_at, retired_at
 from powerfarm_registry.entities;
 
 -- cada versão de artifact vira uma versão de objeto (1, 2, … na ordem em que foram reconhecidas);
 -- o nome original da versão e os metadados ficam em detalhes, para o Minivault mostrar igual
 insert into powerfarm_registry.objetos (id, versao, tipo, nome, descricao, onde, hash, detalhes, criado_em, retirado_em)
-select a.id,
+select regexp_replace(a.id, '^pf\.', 'powerfarm.'),
        row_number() over (partition by a.id order by av.recognized_at, av.version)::int,
        a.kind, a.title, a.summary,
        case
@@ -162,8 +165,8 @@ select a.id,
          'source_repo', av.source_repo,
          'source_revision', av.source_revision,
          'source_path', av.source_path,
-         'reconhecido_por', av.recognized_by,
-         'publicado_por', a.publisher_entity)),
+         'reconhecido_por', regexp_replace(av.recognized_by, '^pf\.', 'powerfarm.'),
+         'publicado_por', regexp_replace(a.publisher_entity, '^pf\.', 'powerfarm.'))),
        av.recognized_at,
        coalesce(av.retired_at, a.retired_at)
 from powerfarm_registry.artifacts a
@@ -277,9 +280,11 @@ returns jsonb language sql stable security definer set search_path = '' as $$
       where v.id = u.id), '[]'::jsonb))
   from (select distinct on (o.id) o.*
         from powerfarm_registry.objetos o
-        where o.id = p_artifact_id and o.retirado_em is null
+        where o.id = regexp_replace(p_artifact_id, '^pf\.', 'powerfarm.') and o.retirado_em is null
         order by o.id, o.versao desc) u;
 $$;
+
+-- (minivault_get aceita o nome antigo pf.* de quem ainda pede por ele e devolve o objeto powerfarm.*)
 
 -- arquivos do Minivault: quem entrou lê só o que é objeto reconhecido (não aposentado)
 drop policy "authenticated recognized minivault read" on storage.objects;
@@ -294,6 +299,7 @@ create policy "authenticated recognized minivault read" on storage.objects
 -- ─── 5. sai o resto (sem cascade: se algo inesperado depender, a migração inteira para) ──
 -- o operador do Places aponta para a entidade dele: passa a apontar para entidades
 alter table powerfarm_observacao.operadores drop constraint operadores_entidade_fkey;
+update powerfarm_observacao.operadores set entidade = regexp_replace(entidade, '^pf\.', 'powerfarm.');
 alter table powerfarm_observacao.operadores add constraint operadores_entidade_fkey
   foreign key (entidade) references powerfarm_registry.entidades (id);
 
@@ -314,9 +320,9 @@ drop function powerfarm_registry.is_sha256_digest(text);
 -- Depois da fundação, o Registry é exatamente o que o contrato social diz:
 --   entidades listadas ficam ativas, as outras são aposentadas;
 --   objetos e contratos listados ficam (criados se faltarem), os outros são aposentados;
---   o próprio contrato social vira objeto: pf.objeto.contrato-social, versão = "versao" do arquivo.
+--   o próprio contrato social vira objeto: powerfarm.objeto.contrato-social, versão = "versao" do arquivo.
 -- Rodar de novo com o mesmo contrato social não muda nada. Nada é apagado.
-create function public.pf_agente_fundar(p_maquina text, p_segredo text, p_contrato_social jsonb, p_hash text)
+create function public.powerfarm_fundar(p_maquina text, p_segredo text, p_contrato_social jsonb, p_hash text)
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
   cs constant jsonb := p_contrato_social;
@@ -365,10 +371,10 @@ begin
 
   -- 2. o próprio contrato social é um objeto (as versões antigas ficam como história)
   select * into achado from powerfarm_registry.objetos
-  where id = 'pf.objeto.contrato-social' and versao = versao_cs;
+  where id = 'powerfarm.objeto.contrato-social' and versao = versao_cs;
   if not found then
     insert into powerfarm_registry.objetos (id, versao, tipo, nome, descricao, onde, hash, detalhes)
-    values ('pf.objeto.contrato-social', versao_cs, 'documento', 'Contrato social da Powerfarm',
+    values ('powerfarm.objeto.contrato-social', versao_cs, 'documento', 'Contrato social da Powerfarm',
             'O que a Powerfarm é: as suas entidades, objetos e contratos.',
             'github.com/powerfarm/places:fundacao/contrato-social.json', p_hash,
             jsonb_build_object('conteudo', cs, 'fundado_por', p_maquina));
@@ -404,7 +410,7 @@ begin
     mantidas := mantidas || ((item ->> 'id') || '@' || (item ->> 'versao'));
   end loop;
   update powerfarm_registry.objetos set retirado_em = now()
-  where retirado_em is null and id <> 'pf.objeto.contrato-social' and not ((id || '@' || versao) = any (mantidas));
+  where retirado_em is null and id <> 'powerfarm.objeto.contrato-social' and not ((id || '@' || versao) = any (mantidas));
   get diagnostics n = row_count;
   mudancas := mudancas + n;
 
@@ -448,6 +454,51 @@ begin
 end $$;
 
 -- como as outras funções dos agentes: só anon (o agente se prova pela senha dentro da função)
-revoke all on function public.pf_agente_fundar(text, text, jsonb, text) from public;
-revoke execute on function public.pf_agente_fundar(text, text, jsonb, text) from authenticated;
-grant execute on function public.pf_agente_fundar(text, text, jsonb, text) to anon;
+revoke all on function public.powerfarm_fundar(text, text, jsonb, text) from public;
+revoke execute on function public.powerfarm_fundar(text, text, jsonb, text) from authenticated;
+grant execute on function public.powerfarm_fundar(text, text, jsonb, text) to anon;
+
+-- ─── 7. a observação usa os mesmos nomes do Registry ──────────────────────────────
+-- (senão o Places não cruza o que existe com o que está registrado)
+alter table powerfarm_observacao.agentes drop constraint agentes_entidade_check;
+update powerfarm_observacao.agentes set entidade = regexp_replace(entidade, '^pf\.', 'powerfarm.');
+alter table powerfarm_observacao.agentes add constraint agentes_entidade_check
+  check (entidade ~ '^powerfarm(\.[a-z0-9][a-z0-9-]*)+$');
+
+-- o que já foi observado passa a ter o nome certo (só o nome muda; o resto do item fica igual)
+update powerfarm_observacao.inventarios i
+set itens = (
+  select coalesce(jsonb_agg(case when e ->> 'id' like 'pf.%'
+                                 then jsonb_set(e, '{id}', to_jsonb('powerfarm.' || substr(e ->> 'id', 4)))
+                                 else e end order by n), '[]'::jsonb)
+  from jsonb_array_elements(i.itens) with ordinality as t(e, n))
+where i.itens::text like '%"pf.%';
+
+-- o inventário aceita só powerfarm.*; o agente que ainda não passou pelo DMG manda pf.*, que é convertido
+create or replace function public.pf_agente_inventario(p_maquina text, p_segredo text, p_itens jsonb, p_observado_em timestamptz)
+returns bigint language plpgsql security definer set search_path = '' as $$
+declare
+  novo bigint;
+  itens jsonb;
+begin
+  perform powerfarm_observacao.exigir_agente(p_maquina, p_segredo);
+  if jsonb_typeof(p_itens) is distinct from 'array' or jsonb_array_length(p_itens) > 5000 then
+    raise exception 'inventário: esperado um array de até 5000 itens' using errcode = '22023';
+  end if;
+  if exists (select 1 from jsonb_array_elements(p_itens) e where jsonb_typeof(e) <> 'object') then
+    raise exception 'inventário: todo item precisa ser um objeto com id' using errcode = '22023';
+  end if;
+  select coalesce(jsonb_agg(case when e ->> 'id' like 'pf.%'
+                                 then jsonb_set(e, '{id}', to_jsonb('powerfarm.' || substr(e ->> 'id', 4)))
+                                 else e end order by n), '[]'::jsonb)
+    into itens
+  from jsonb_array_elements(p_itens) with ordinality as t(e, n);
+  if exists (select 1 from jsonb_array_elements(itens) e
+             where coalesce(e ->> 'id', '') !~ '^powerfarm(\.[a-z0-9][a-z0-9-]*)+$') then
+    raise exception 'inventário: todo item precisa de um id no formato powerfarm.*' using errcode = '22023';
+  end if;
+  insert into powerfarm_observacao.inventarios (maquina, itens, observado_em)
+  values (p_maquina, itens, p_observado_em)
+  returning id into novo;
+  return novo;
+end $$;

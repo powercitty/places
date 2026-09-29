@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Fundação: entrega o contrato social ao Registry pela única porta de escrita (pf_agente_fundar).
+// Fundação: entrega o contrato social ao Registry pela única porta de escrita (powerfarm_fundar).
 // É o último passo do DMG, depois que o agente deste computador está no ar. Nunca mostra segredos.
 //
 //   node deploy/fundar.mjs <lab-256|lab-512|lab-8gb>            funda (ou só confere, se já estiver fundada)
@@ -64,6 +64,6 @@ if (modo === "--ensaio") {
   process.exit(0);
 }
 
-const r = await chamar("pf_agente_fundar", { p_contrato_social: contrato, p_hash: hash });
+const r = await chamar("powerfarm_fundar", { p_contrato_social: contrato, p_hash: hash });
 const como = r.mudancas > 0 ? "fundada" : "já estava fundada, nada mudou";
 console.log(`✓ Powerfarm ${como}: ${r.entidades} entidades, ${r.objetos} objetos, ${r.contratos} contratos`);

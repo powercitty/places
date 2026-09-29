@@ -49,7 +49,7 @@ export interface Sinal {
 
 /** Algo que o observador encontrou de fato numa máquina ou lugar. */
 export interface Observado {
-  /** Nome estável no formato do Registry: pf.<...> */
+  /** Nome estável no formato do Registry: powerfarm.<...> */
   id: string;
   tipo: string;
   maquina: Maquina | null;
@@ -87,7 +87,7 @@ export interface Linha {
 /** Tipos do Registry que dá para observar (pessoa e setor não "rodam" em lugar nenhum). */
 export const TIPOS_OBSERVAVEIS = new Set(["machine", "service", "process", "app", "engine", "mcp"]);
 
-const ID_DO_REGISTRY = /^pf(\.[a-z0-9][a-z0-9-]*)+$/;
+const ID_DO_REGISTRY = /^powerfarm(\.[a-z0-9][a-z0-9-]*)+$/;
 
 export function idValido(id: string): boolean {
   return ID_DO_REGISTRY.test(id);
@@ -104,9 +104,9 @@ export function slug(nome: string): string {
   return s || "sem-nome";
 }
 
-/** Monta o id estável de algo observado: pf.<partes...> */
+/** Monta o id estável de algo observado: powerfarm.<partes...> */
 export function idPara(...partes: string[]): string {
-  return ["pf", ...partes.map(slug)].join(".");
+  return ["powerfarm", ...partes.map(slug)].join(".");
 }
 
 /**

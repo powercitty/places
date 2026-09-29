@@ -10,29 +10,30 @@ const reg = (id: string, kind = "service", retired_at: string | null = null): Re
 
 test("as 4 situações", () => {
   const linhas = cruzar(
-    [obs("pf.process.manhattan"), obs("pf.servico.lab-8gb.mcp-novo"), obs("pf.search"), obs("pf.servico.lab-8gb.plist-solto", { proibido: true })],
-    [reg("pf.process.manhattan", "process"), reg("pf.antenna"), reg("pf.search", "service", "2026-09-01T00:00:00Z"), reg("pf.person.director", "person")],
+    [obs("powerfarm.process.manhattan"), obs("powerfarm.servico.lab-8gb.mcp-novo"), obs("powerfarm.search"), obs("powerfarm.servico.lab-8gb.plist-solto", { proibido: true })],
+    [reg("powerfarm.process.manhattan", "process"), reg("powerfarm.antenna"), reg("powerfarm.search", "service", "2026-09-01T00:00:00Z"), reg("powerfarm.person.director", "person")],
   );
   const por = Object.fromEntries(linhas.map((l) => [l.id, l.situacao]));
-  assert.equal(por["pf.process.manhattan"], "registrado");
-  assert.equal(por["pf.antenna"], "faltando");
-  assert.equal(por["pf.servico.lab-8gb.mcp-novo"], "nao-registrado");
-  assert.equal(por["pf.search"], "nao-deveria");
-  assert.equal(por["pf.servico.lab-8gb.plist-solto"], "nao-deveria");
-  assert.equal(por["pf.person.director"], undefined, "pessoa não é observável, não aparece como faltando");
+  assert.equal(por["powerfarm.process.manhattan"], "registrado");
+  assert.equal(por["powerfarm.antenna"], "faltando");
+  assert.equal(por["powerfarm.servico.lab-8gb.mcp-novo"], "nao-registrado");
+  assert.equal(por["powerfarm.search"], "nao-deveria");
+  assert.equal(por["powerfarm.servico.lab-8gb.plist-solto"], "nao-deveria");
+  assert.equal(por["powerfarm.person.director"], undefined, "pessoa não é observável, não aparece como faltando");
 });
 
 test("o que é problema aparece primeiro", () => {
-  const linhas = cruzar([obs("pf.a"), obs("pf.b", { proibido: true })], [reg("pf.a"), reg("pf.z")]);
+  const linhas = cruzar([obs("powerfarm.a"), obs("powerfarm.b", { proibido: true })], [reg("powerfarm.a"), reg("powerfarm.z")]);
   assert.deepEqual(linhas.map((l) => l.situacao), ["nao-deveria", "faltando", "registrado"]);
 });
 
 test("ids gerados valem no Registry, com acento e símbolo", () => {
   assert.equal(slug("Constituição do Híbrido!"), "constituicao-do-hibrido");
   const id = idPara("mcp", "lab-256", "Claude Code", "coloured_places.MCP");
-  assert.equal(id, "pf.mcp.lab-256.claude-code.coloured-places-mcp");
+  assert.equal(id, "powerfarm.mcp.lab-256.claude-code.coloured-places-mcp");
   assert.ok(idValido(id));
-  assert.ok(!idValido("pf.Maiúscula"));
+  assert.ok(!idValido("powerfarm.Maiúscula"));
+  assert.ok(!idValido("pf.lab-256"), "o nome é powerfarm.*, não pf.*");
 });
 
 test("versão do MCP travada", () => {

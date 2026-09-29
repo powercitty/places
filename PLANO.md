@@ -20,7 +20,7 @@
 | Registry | `powerfarm.kernal` / `powerfarm_registry`: entidades, objetos e contratos, e mais nada. Escrito só pela fundação |
 | Fundação | `Powerfarm.dmg`: dois cliques instalam o agente neste LAB e fundam a Powerfarm pelo contrato social (`fundacao/`) |
 | Places | a tela; cruza Registry × observado |
-| Agente local | Eve + Vercel AI Gateway + MCP 2026-07-28 sem estado. Observa, é porteiro (testes com ficha e prazo) e síndico (disco, dependências, versões). Materializa `pf.host-runner.lab-8gb` e `pf.host-runner.lab-512` |
+| Agente local | Eve + Vercel AI Gateway + MCP 2026-07-28 sem estado. Observa, é porteiro (testes com ficha e prazo) e síndico (disco, dependências, versões). Materializa `powerfarm.host-runner.lab-8gb` e `powerfarm.host-runner.lab-512` |
 | Camada de dependências | aube, uv, build de Rust compartilhado + sccache, dedup por clone APFS, limpeza do que se refaz |
 | Repositório | este: `powerfarm/places` |
 

@@ -1,6 +1,6 @@
 {
   "maquina": "lab-256",
-  "registry": "pf.host-runner.lab-256",
+  "registry": "powerfarm.host-runner.lab-256",
   "papel": "bancada",
   "lugares": ["labs"],
   "modelo": "anthropic/claude-sonnet-5",

@@ -1,56 +1,56 @@
 {
   "versao": 1,
-  "empresa": "pf.powerfarm",
-  "fundador": "pf.person.director",
+  "empresa": "powerfarm",
+  "fundador": "powerfarm.person.director",
   "entidades": [
-    { "id": "pf.powerfarm", "tipo": "company", "nome": "Powerfarm", "descricao": "A empresa. Nasce do contrato de fundação." },
-    { "id": "pf.person.director", "tipo": "person", "nome": "Director", "descricao": "Powerfarm Director and human institutional principal" },
+    { "id": "powerfarm", "tipo": "company", "nome": "Powerfarm", "descricao": "A empresa. Nasce do contrato de fundação." },
+    { "id": "powerfarm.person.director", "tipo": "person", "nome": "Director", "descricao": "Powerfarm Director and human institutional principal" },
 
-    { "id": "pf.identity", "tipo": "sector", "nome": "Powerfarm Identity", "descricao": "Who Powerfarm is: principals, Registry and Minivault" },
-    { "id": "pf.continuity", "tipo": "sector", "nome": "Powerfarm Continuity", "descricao": "How Powerfarm materializes and runs work" },
-    { "id": "pf.research", "tipo": "sector", "nome": "Powerfarm Research", "descricao": "What Powerfarm studies" },
+    { "id": "powerfarm.identity", "tipo": "sector", "nome": "Powerfarm Identity", "descricao": "Who Powerfarm is: principals, Registry and Minivault" },
+    { "id": "powerfarm.continuity", "tipo": "sector", "nome": "Powerfarm Continuity", "descricao": "How Powerfarm materializes and runs work" },
+    { "id": "powerfarm.research", "tipo": "sector", "nome": "Powerfarm Research", "descricao": "What Powerfarm studies" },
 
-    { "id": "pf.lab-8gb", "tipo": "machine", "nome": "LAB 8GB", "descricao": "Always-on ecosystem LAB" },
-    { "id": "pf.lab-512", "tipo": "machine", "nome": "LAB 512", "descricao": "Always-on ecosystem LAB" },
-    { "id": "pf.lab-256", "tipo": "machine", "nome": "LAB 256", "descricao": "Bancada: onde uma versão nova é testada antes de ir para os outros LABs" },
+    { "id": "powerfarm.lab-8gb", "tipo": "machine", "nome": "LAB 8GB", "descricao": "Always-on ecosystem LAB" },
+    { "id": "powerfarm.lab-512", "tipo": "machine", "nome": "LAB 512", "descricao": "Always-on ecosystem LAB" },
+    { "id": "powerfarm.lab-256", "tipo": "machine", "nome": "LAB 256", "descricao": "Bancada: onde uma versão nova é testada antes de ir para os outros LABs" },
 
-    { "id": "pf.host-runner.lab-8gb", "tipo": "service", "nome": "Host Runner — LAB 8GB", "descricao": "Controlled machine-effect boundary for LAB 8GB; identity exists before materialization" },
-    { "id": "pf.host-runner.lab-512", "tipo": "service", "nome": "Host Runner — LAB 512", "descricao": "Controlled machine-effect boundary for LAB 512; identity exists before materialization" },
-    { "id": "pf.host-runner.lab-256", "tipo": "service", "nome": "Host Runner — LAB 256", "descricao": "O agente Powerfarm do LAB 256 (app.powerfarm.agente)" },
+    { "id": "powerfarm.host-runner.lab-8gb", "tipo": "service", "nome": "Host Runner — LAB 8GB", "descricao": "Controlled machine-effect boundary for LAB 8GB; identity exists before materialization" },
+    { "id": "powerfarm.host-runner.lab-512", "tipo": "service", "nome": "Host Runner — LAB 512", "descricao": "Controlled machine-effect boundary for LAB 512; identity exists before materialization" },
+    { "id": "powerfarm.host-runner.lab-256", "tipo": "service", "nome": "Host Runner — LAB 256", "descricao": "O agente Powerfarm do LAB 256 (app.powerfarm.agente)" },
 
-    { "id": "pf.antenna", "tipo": "service", "nome": "Antenna", "descricao": "Powerfarm ingress/egress and observational evidence responsibility" },
-    { "id": "pf.heartime", "tipo": "service", "nome": "Heartime", "descricao": "Powerfarm durable temporal obligation/evidence responsibility" },
-    { "id": "pf.search", "tipo": "service", "nome": "Powerfarm Search", "descricao": "Federated rebuildable read model over recognized sources" },
-    { "id": "pf.process.manhattan", "tipo": "process", "nome": "Manhattan", "descricao": "Permanent protected infrastructure process on both ecosystem LABs" },
-    { "id": "pf.engine.google-adk", "tipo": "engine", "nome": "Google Agent Development Kit", "descricao": "Continuity workflow and onboarding engine; materialized as google-adk 2.9.2 on both ecosystem LABs" },
+    { "id": "powerfarm.antenna", "tipo": "service", "nome": "Antenna", "descricao": "Powerfarm ingress/egress and observational evidence responsibility" },
+    { "id": "powerfarm.heartime", "tipo": "service", "nome": "Heartime", "descricao": "Powerfarm durable temporal obligation/evidence responsibility" },
+    { "id": "powerfarm.search", "tipo": "service", "nome": "Powerfarm Search", "descricao": "Federated rebuildable read model over recognized sources" },
+    { "id": "powerfarm.process.manhattan", "tipo": "process", "nome": "Manhattan", "descricao": "Permanent protected infrastructure process on both ecosystem LABs" },
+    { "id": "powerfarm.engine.google-adk", "tipo": "engine", "nome": "Google Agent Development Kit", "descricao": "Continuity workflow and onboarding engine; materialized as google-adk 2.9.2 on both ecosystem LABs" },
 
-    { "id": "pf.app.coloured-places", "tipo": "app", "nome": "Coloured Places", "descricao": "Continuity observability and urgent-fix operator application" },
-    { "id": "pf.app.minivault-web", "tipo": "app", "nome": "Minivault Web", "descricao": "LLM and human interface over Minivault; identity exists before admission" }
+    { "id": "powerfarm.app.coloured-places", "tipo": "app", "nome": "Coloured Places", "descricao": "Continuity observability and urgent-fix operator application" },
+    { "id": "powerfarm.app.minivault-web", "tipo": "app", "nome": "Minivault Web", "descricao": "LLM and human interface over Minivault; identity exists before admission" }
   ],
   "objetos": [
-    { "id": "pf.artifact.legacy-airtable-registry-export", "versao": 1 },
-    { "id": "pf.artifact.legacy-airtable-registry-export", "versao": 2 }
+    { "id": "powerfarm.artifact.legacy-airtable-registry-export", "versao": 1 },
+    { "id": "powerfarm.artifact.legacy-airtable-registry-export", "versao": 2 }
   ],
   "contratos": [
     {
-      "id": "pf.contrato.fundacao", "versao": 1, "nome": "Fundação da Powerfarm",
-      "partes": ["pf.person.director", "pf.powerfarm"],
-      "objetos": ["pf.objeto.contrato-social"],
+      "id": "powerfarm.contrato.fundacao", "versao": 1, "nome": "Fundação da Powerfarm",
+      "partes": ["powerfarm.person.director", "powerfarm"],
+      "objetos": ["powerfarm.objeto.contrato-social"],
       "termos": { "o_que": "O Director funda a Powerfarm. A Powerfarm é o que este contrato social diz." }
     },
     {
-      "id": "pf.contrato.lab-8gb", "versao": 1, "nome": "LAB 8GB serve a Powerfarm",
-      "partes": ["pf.powerfarm", "pf.lab-8gb", "pf.host-runner.lab-8gb"],
+      "id": "powerfarm.contrato.lab-8gb", "versao": 1, "nome": "LAB 8GB serve a Powerfarm",
+      "partes": ["powerfarm", "powerfarm.lab-8gb", "powerfarm.host-runner.lab-8gb"],
       "termos": { "papel": "principal" }
     },
     {
-      "id": "pf.contrato.lab-512", "versao": 1, "nome": "LAB 512 serve a Powerfarm",
-      "partes": ["pf.powerfarm", "pf.lab-512", "pf.host-runner.lab-512"],
+      "id": "powerfarm.contrato.lab-512", "versao": 1, "nome": "LAB 512 serve a Powerfarm",
+      "partes": ["powerfarm", "powerfarm.lab-512", "powerfarm.host-runner.lab-512"],
       "termos": { "papel": "reserva" }
     },
     {
-      "id": "pf.contrato.lab-256", "versao": 1, "nome": "LAB 256 serve a Powerfarm",
-      "partes": ["pf.powerfarm", "pf.lab-256", "pf.host-runner.lab-256"],
+      "id": "powerfarm.contrato.lab-256", "versao": 1, "nome": "LAB 256 serve a Powerfarm",
+      "partes": ["powerfarm", "powerfarm.lab-256", "powerfarm.host-runner.lab-256"],
       "termos": { "papel": "bancada" }
     }
   ]
