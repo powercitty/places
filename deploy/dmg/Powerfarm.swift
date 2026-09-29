@@ -105,7 +105,8 @@ final class Coreografia: ObservableObject {
                 avancar(para: n)
             }
         } else if linha.hasPrefix("✓ Powerfarm") || linha.hasPrefix("✓ ensaio") {
-            resumo = String(linha.dropFirst(2))
+            let r = linha.dropFirst(2)
+            resumo = r.prefix(1).uppercased() + r.dropFirst()
         } else if linha.hasPrefix("✗") {
             erro = String(linha.dropFirst(1)).trimmingCharacters(in: .whitespaces)
         }
