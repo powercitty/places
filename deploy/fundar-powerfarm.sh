@@ -37,7 +37,7 @@ RESPOSTA=$(curl -sS -m 20 -X POST "$URL/rest/v1/rpc/pf_agente_fundar" -H "apikey
   -d "{\"p_maquina\":\"$MAQUINA\",\"p_segredo\":\"\",\"p_contrato_social\":{},\"p_hash\":\"\"}" 2>&1 || true)
 case "$RESPOSTA" in
   *PGRST202*) falha "o Supabase ainda não está pronto para a fundação (falta aplicar a migração do Registry). Nada foi mexido." ;;
-  *"agente não autorizado"*) echo "Supabase pronto para a fundação" ;;
+  *'"code":"28000"'*) echo "Supabase pronto para a fundação" ;;   # recusou a senha vazia: a porta existe
   *) falha "não consegui falar com o Supabase: ${RESPOSTA:0:160}" ;;
 esac
 # o código vem de dentro do DMG; guardo uma cópia que continua existindo depois de ejetar
