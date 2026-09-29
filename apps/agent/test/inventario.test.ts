@@ -1,14 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
-import { homedir, tmpdir } from "node:os";
+import { homedir, hostname, tmpdir } from "node:os";
 import { join } from "node:path";
 import { idValido } from "@powerfarm/contract";
 import { inventario, mcpsConfigurados, pastasEProjetos, type Contexto } from "../agent/lib/coleta/inventario.ts";
 
 const ctx = (home: string): Contexto => ({
   maquina: "lab-256",
-  registryDoAgente: "pf.host-runner.lab-256",
+  registryDoAgente: "powerfarm.host-runner.lab-256",
   rotuloDoAgente: "app.powerfarm.agente",
   home,
   agora: "2026-09-26T12:00:00.000Z",
@@ -43,7 +43,7 @@ test("pastas: as 4 contam itens, Manhattan é protegido, o resto na raiz é 'nã
 test("projeto com código de servidor MCP aparece como MCP (sem olhar dentro de node_modules)", () => {
   const itens = pastasEProjetos(ctx(casaDeTeste()));
   const mcps = itens.filter((i) => i.tipo === "mcp");
-  assert.deepEqual(mcps.map((i) => i.id), ["pf.mcp.meu-mcp"]);
+  assert.deepEqual(mcps.map((i) => i.id), ["powerfarm.mcp.meu-mcp"]);
 });
 
 test("MCPs configurados nas IAs e nos projetos, sem segredo", () => {
@@ -52,10 +52,14 @@ test("MCPs configurados nas IAs e nos projetos, sem segredo", () => {
   assert.ok(!JSON.stringify(m).includes("SEGREDO"));
 });
 
-test("neste computador de verdade: todo item tem id válido e nada parece segredo", async () => {
+// Só num LAB de verdade: no CI não há computador para olhar (este teste quebrava o CI desde 2026-09-26).
+const ESTE_LAB = hostname().split(".")[0];
+const NUM_LAB = process.platform === "darwin" && ["lab-256", "lab-512", "lab-8gb"].includes(ESTE_LAB);
+
+test("neste computador de verdade: todo item tem id válido e nada parece segredo", { skip: !NUM_LAB && "só roda num LAB" }, async () => {
   const itens = await inventario(ctx(homedir()));
   assert.ok(itens.length > 5);
-  assert.equal(itens[0].id, "pf.lab-256");
+  assert.equal(itens[0].id, "powerfarm.lab-256"); // o contexto do teste é o do LAB 256
   for (const i of itens) assert.ok(idValido(i.id), i.id);
   const tudo = JSON.stringify(itens);
   for (const re of [/sk-ant-[A-Za-z0-9_-]{10}/, /\bsk-[A-Za-z0-9]{20}/, /eyJ[A-Za-z0-9_-]{20}/, /gh[pousr]_[A-Za-z0-9]{20}/, /sb_secret_/, /vck_[A-Za-z0-9]{10}/]) {

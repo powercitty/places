@@ -1,6 +1,6 @@
 {
   "maquina": "lab-8gb",
-  "registry": "pf.host-runner.lab-8gb",
+  "registry": "powerfarm.host-runner.lab-8gb",
   "papel": "principal",
   "lugares": ["supabase", "labs", "apps", "engines", "drive"],
   "modelo": "anthropic/claude-sonnet-5",

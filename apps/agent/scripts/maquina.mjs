@@ -9,12 +9,12 @@ const aqui = dirname(fileURLToPath(import.meta.url));
 const raiz = join(aqui, "..", "..", "..");
 const PAPEIS = new Set(["principal", "reserva", "bancada"]);
 const LUGARES = new Set(["supabase", "labs", "apps", "engines", "drive"]);
-const ID = /^pf(\.[a-z0-9][a-z0-9-]*)+$/;
+const ID = /^powerfarm(\.[a-z0-9][a-z0-9-]*)+$/;
 
 export function validar(p) {
   const erros = [];
   if (!/^lab-(256|512|8gb)$/.test(p.maquina ?? "")) erros.push(`máquina desconhecida: ${p.maquina}`);
-  if (!ID.test(p.registry ?? "")) erros.push(`registry fora do formato pf.*: ${p.registry}`);
+  if (!ID.test(p.registry ?? "")) erros.push(`registry fora do formato powerfarm.*: ${p.registry}`);
   if (!PAPEIS.has(p.papel)) erros.push(`papel inválido: ${p.papel}`);
   if (!Array.isArray(p.lugares) || !p.lugares.length || p.lugares.some((l) => !LUGARES.has(l))) erros.push(`lugares inválidos: ${p.lugares}`);
   if (!/^[a-z0-9-]+\/[a-z0-9.-]+$/.test(p.modelo ?? "")) erros.push(`modelo fora do formato do AI Gateway: ${p.modelo}`);

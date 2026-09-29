@@ -3,8 +3,8 @@
   "supabase_chave_publica": "sb_publishable_83KEoKyGTUuYXL9DQEzWcQ_TwNhns5s",
   "rotulo_do_agente": "app.powerfarm.agente",
   "enderecos": [
-    { "lugar": "apps", "alvo": "coloured-places", "registry": "pf.app.coloured-places", "url": "https://coloured-places.vercel.app/" },
-    { "lugar": "apps", "alvo": "places.minilab.work", "registry": "pf.app.coloured-places", "url": "https://places.minilab.work/" },
-    { "lugar": "apps", "alvo": "antenna.minilab.work", "registry": "pf.antenna", "url": "https://antenna.minilab.work/" }
+    { "lugar": "apps", "alvo": "coloured-places", "registry": "powerfarm.app.coloured-places", "url": "https://coloured-places.vercel.app/" },
+    { "lugar": "apps", "alvo": "places.minilab.work", "registry": "powerfarm.app.coloured-places", "url": "https://places.minilab.work/" },
+    { "lugar": "apps", "alvo": "antenna.minilab.work", "registry": "powerfarm.antenna", "url": "https://antenna.minilab.work/" }
   ]
 }

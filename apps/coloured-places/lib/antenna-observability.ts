@@ -34,7 +34,7 @@ async function collect() {
     antenna = { state: r.ok && body.status === 'alive' ? 'healthy' : 'needs_a_look', http_status: r.status, contract_services: body.contract_services };
   } catch { antenna = { state: 'unknown', reason: 'Observer could not establish Antenna health' }; }
   const observed_at = new Date().toISOString();
-  const input = { event: 'powerfarm.observation', source: 'pf.coloured-places', observed_at, aspects: { antenna } };
+  const input = { event: 'powerfarm.observation', source: 'powerfarm.coloured-places', observed_at, aspects: { antenna } };
   const r = await fetch(base + '/', {
     method: 'POST', redirect: 'error', signal: AbortSignal.timeout(65_000),
     headers: { 'Content-Type': 'application/json', 'User-Agent': 'powerfarm-coloured-places/1', 'Antenna-Contract': contract, Authorization: `Bearer ${token}` },

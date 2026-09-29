@@ -252,7 +252,7 @@ export async function inventario(c: Contexto): Promise<Item[]> {
   const mcps = mcpsConfigurados(c).map((m) => item(c, idDoMcp(m.nome), "mcp", m.nome, `${m.fonte} · ${m.tipo}${m.alvo ? ` · ${m.alvo}` : ""}`));
   const agentePeloLaunchd = s.some((i) => i.id === c.registryDoAgente);
   return [
-    item(c, `pf.${c.maquina}`, "machine", c.maquina, "este computador"),
+    item(c, `powerfarm.${c.maquina}`, "machine", c.maquina, "este computador"),
     ...(agentePeloLaunchd ? [] : [item(c, c.registryDoAgente, "service", "agente Powerfarm", "o agente local (rodando fora do launchd)")]),
     ...s,
     ...p,

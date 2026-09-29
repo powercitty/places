@@ -1,12 +1,12 @@
 -- Testes da base de observação. Qualquer falha interrompe (ON_ERROR_STOP).
 insert into powerfarm_observacao.agentes (maquina, entidade, segredo_sha256) values
-  ('lab-256', 'pf.host-runner.lab-256', encode(extensions.digest('segredo-256', 'sha256'), 'hex')),
-  ('lab-8gb', 'pf.host-runner.lab-8gb', encode(extensions.digest('segredo-8gb', 'sha256'), 'hex'));
+  ('lab-256', 'powerfarm.host-runner.lab-256', encode(extensions.digest('segredo-256', 'sha256'), 'hex')),
+  ('lab-8gb', 'powerfarm.host-runner.lab-8gb', encode(extensions.digest('segredo-8gb', 'sha256'), 'hex'));
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000001', 'diretor@example.com'),
   ('00000000-0000-0000-0000-000000000002', 'estranho@example.com');
 insert into powerfarm_observacao.operadores (user_id, entidade) values
-  ('00000000-0000-0000-0000-000000000001', 'pf.person.director');
+  ('00000000-0000-0000-0000-000000000001', 'powerfarm.person.director');
 
 set role anon;
 
@@ -44,14 +44,14 @@ do $$ begin
   raise exception 'FALHOU: sinal do futuro foi aceito';
 exception when check_violation then null; end $$;
 
--- 4. inventário: id fora do formato pf.* é barrado; válido entra
+-- 4. inventário: id fora do formato powerfarm.* é barrado; válido entra
 do $$ begin
   perform public.pf_agente_inventario('lab-256', 'segredo-256', '[{"id":"Serviço Solto"}]'::jsonb, now());
   raise exception 'FALHOU: id inválido no inventário foi aceito';
 exception when sqlstate '22023' then null; end $$;
 do $$ begin
   perform public.pf_agente_inventario('lab-256', 'segredo-256',
-    '[{"id":"pf.servico.lab-256.algo","tipo":"service","nome":"algo"}]'::jsonb, now());
+    '[{"id":"powerfarm.servico.lab-256.algo","tipo":"service","nome":"algo"}]'::jsonb, now());
 end $$;
 
 -- 5. eventos repetidos não duplicam
@@ -105,8 +105,8 @@ reset role;
 set role anon;
 do $$ declare r jsonb; begin
   r := public.pf_agente_registry('lab-8gb', 'segredo-8gb');
-  if r @> '[{"id":"pf.search"}]' then raise exception 'FALHOU: aposentado apareceu para o agente'; end if;
-  if not r @> '[{"id":"pf.antenna"}]' then raise exception 'FALHOU: Antenna deveria aparecer'; end if;
+  if r @> '[{"id":"powerfarm.search"}]' then raise exception 'FALHOU: aposentado apareceu para o agente'; end if;
+  if not r @> '[{"id":"powerfarm.antenna"}]' then raise exception 'FALHOU: Antenna deveria aparecer'; end if;
 end $$;
 reset role;
 

@@ -14,4 +14,6 @@ for m in supabase/migrations/*.sql; do
   case "$m" in *retencao*) continue ;; esac   # pg_cron só existe no Supabase
   "${P[@]}" -f "$m"
 done
-"${P[@]}" -t -f supabase/tests/observacao.test.sql | sed '/^\s*$/d'
+for t in observacao registry; do   # nessa ordem: o registry usa os agentes criados pela observação
+  "${P[@]}" -t -f "supabase/tests/$t.test.sql" | sed '/^\s*$/d'
+done

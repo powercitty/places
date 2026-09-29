@@ -1,14 +1,14 @@
 # Coloured Places admission — 2026-09-15
 
-This app is `pf.coloured-places`, Registry identity
+This app is `powerfarm.coloured-places`, Registry identity
 `cb690740-ffd8-439a-8d54-d9284e729443`, admitted under app contract v2.
 
-- Place: `pf.app-park.8gb`.
+- Place: `powerfarm.app-park.8gb`.
 - Bytes: `/Users/danvoulez/App Park/coloured-places` on lab-8gb.
 - Source: https://github.com/powerfarm/powerfarm-coloured-places.
 - Human route: https://places.minilab.work.
 - Login: existing Powerfarm Identity OAuth issuer, PKCE and server-side session.
-- Operator: the existing `pf.danvoulez` identity link is required; being any
+- Operator: the existing `powerfarm.danvoulez` identity link is required; being any
   authenticated Supabase user is insufficient.
 - Observability: accepted client contract `coloured-places.observability`,
   `f5bde058-9e7e-465d-9938-9744046cb5a1`, under `antenna.http`.
