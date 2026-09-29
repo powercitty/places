@@ -63,7 +63,7 @@ export interface Observado {
   motivo?: string;
 }
 
-/** Linha de powerfarm_registry.entities (só o que a tela precisa). */
+/** Entidade do Registry (powerfarm_registry.entidades), no formato que a tela recebe. */
 export interface Registrado {
   id: string;
   kind: string;
