@@ -242,7 +242,21 @@ struct Tela: View {
         .padding(30)
         .frame(width: 460, height: 640)
         .onAppear { c.comecar() }
+        .onChange(of: c.terminou) {
+            // PF_FOTO=<arquivo.png>: o app fotografa a própria janela no fim (para conferir a tela sem ninguém olhar)
+            if c.terminou, let f = ProcessInfo.processInfo.environment["PF_FOTO"] {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { fotografar(f) }
+            }
+        }
     }
+}
+
+@MainActor
+func fotografar(_ caminho: String) {
+    guard let v = NSApp.windows.first(where: { $0.isVisible })?.contentView,
+          let rep = v.bitmapImageRepForCachingDisplay(in: v.bounds) else { return }
+    v.cacheDisplay(in: v.bounds, to: rep)
+    try? rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: caminho))
 }
 
 final class Delegado: NSObject, NSApplicationDelegate {
