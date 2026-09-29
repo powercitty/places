@@ -57,7 +57,7 @@ echo "== o que vai dentro"
 REFS=(HEAD "$RAMO")
 [ "$RAMO" = main ] || REFS+=(main)
 git bundle create --quiet "$APP/Contents/Resources/places.bundle" "${REFS[@]}"
-cp deploy/fundar-powerfarm.sh deploy/instalar-agente.sh "$APP/Contents/Resources/"
+cp deploy/fundar-powerfarm.sh deploy/instalar-agente.sh machines/comum.json "$APP/Contents/Resources/"
 echo "$COMMIT" > "$APP/Contents/Resources/COMMIT"
 codesign --force --sign - "$APP" 2>/dev/null
 

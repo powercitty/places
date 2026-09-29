@@ -29,6 +29,17 @@ case "$MAQUINA" in
   *) falha "este computador ($MAQUINA) não é um dos LABs da Powerfarm" ;;
 esac
 command -v mise >/dev/null || falha "falta o mise neste computador (brew install mise)"
+# antes de mexer em qualquer coisa: o Supabase já tem a porta da fundação?
+# (chamada sem senha: é recusada lá dentro sem escrever nada; só importa se a função existe)
+URL=$(sed -n 's/.*"supabase_url": *"\([^"]*\)".*/\1/p' "$AQUI/comum.json")
+CHAVE=$(sed -n 's/.*"supabase_chave_publica": *"\([^"]*\)".*/\1/p' "$AQUI/comum.json")
+RESPOSTA=$(curl -sS -m 20 -X POST "$URL/rest/v1/rpc/pf_agente_fundar" -H "apikey: $CHAVE" -H "content-type: application/json" \
+  -d "{\"p_maquina\":\"$MAQUINA\",\"p_segredo\":\"\",\"p_contrato_social\":{},\"p_hash\":\"\"}" 2>&1 || true)
+case "$RESPOSTA" in
+  *PGRST202*) falha "o Supabase ainda não está pronto para a fundação (falta aplicar a migração do Registry). Nada foi mexido." ;;
+  *"agente não autorizado"*) echo "Supabase pronto para a fundação" ;;
+  *) falha "não consegui falar com o Supabase: ${RESPOSTA:0:160}" ;;
+esac
 # o código vem de dentro do DMG; guardo uma cópia que continua existindo depois de ejetar
 mkdir -p "$SUPORTE"
 cp -f "$BUNDLE" "$SUPORTE/places.bundle"
