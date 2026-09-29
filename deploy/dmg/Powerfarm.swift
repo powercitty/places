@@ -241,6 +241,7 @@ struct Tela: View {
         }
         .padding(30)
         .frame(width: 460, height: 640)
+        .background(Color(nsColor: .windowBackgroundColor))
         .onAppear { c.comecar() }
         .onChange(of: c.terminou) {
             // PF_FOTO=<arquivo.png>: o app fotografa a própria janela no fim (para conferir a tela sem ninguém olhar)
